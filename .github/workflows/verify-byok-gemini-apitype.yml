@@ -1,10 +1,16 @@
-name: Verify BYOK Gemini apiType (manual, temporary)
+name: Verify BYOK Gemini apiType (temporary)
 
 # Supporting evidence for microsoft/vscode#329632. Lives only on this fork's
 # ci/verify-byok-gemini-apitype branch, never on the PR branch, since it depends
 # on a GEMINI_API_KEY secret this repo has and microsoft/vscode does not.
+#
+# Triggers on push to this branch specifically, not workflow_dispatch: dispatch
+# requires the workflow to also exist on the default branch for GitHub to
+# discover it, which this verification is deliberately kept off of.
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - ci/verify-byok-gemini-apitype
 
 jobs:
   verify:
