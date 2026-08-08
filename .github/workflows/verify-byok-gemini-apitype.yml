@@ -1,0 +1,27 @@
+name: Verify BYOK Gemini apiType (manual, temporary)
+
+# Supporting evidence for microsoft/vscode#329632. Lives only on this fork's
+# ci/verify-byok-gemini-apitype branch, never on the PR branch, since it depends
+# on a GEMINI_API_KEY secret this repo has and microsoft/vscode does not.
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        model: [gemini-3.5-flash, gemini-3.6-flash]
+      fail-fast: false
+    defaults:
+      run:
+        working-directory: extensions/copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm ci
+      - run: npx tsx .tmp-ci-verify/verify-byok-gemini-apitype.mts "${{ matrix.model }}"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
